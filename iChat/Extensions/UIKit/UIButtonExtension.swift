@@ -10,25 +10,28 @@ import Foundation
 import UIKit
 
 extension UIButton {
+    
     convenience init(title: String,
                      titleColor: UIColor,
-                     font: UIFont? = .avenir20(),
                      backgroundColor: UIColor,
+                     font: UIFont? = .avenir20(),
                      isShadow: Bool = false,
                      cornerRadius: CGFloat = 4) {
         self.init(type: .system)
         
-        setTitle(title, for: .normal)
-        setTitleColor(titleColor, for: .normal)
-        titleLabel?.font = font
+        self.setTitle(title, for: .normal)
+        self.setTitleColor(titleColor, for: .normal)
         self.backgroundColor = backgroundColor
-        layer.cornerRadius = cornerRadius
+        self.titleLabel?.font = font
+        
+        self.layer.cornerRadius = cornerRadius
+        
         
         if isShadow {
-            layer.shadowColor = UIColor.black.cgColor
-            layer.shadowRadius = 4
-            layer.shadowOpacity = 0.2
-            layer.shadowOffset = CGSize(width: 0, height: 4)
+            self.layer.shadowColor = UIColor.black.cgColor
+            self.layer.shadowRadius = 4
+            self.layer.shadowOpacity = 0.2
+            self.layer.shadowOffset = CGSize(width: 0, height: 4)
         }
     }
     

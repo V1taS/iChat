@@ -26,7 +26,7 @@ class AddPhotoView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         let myImage = #imageLiteral(resourceName: "plus")
         button.setImage(myImage, for: .normal)
-        button.tintColor = .black
+        button.tintColor = .buttonDark()
         return button
     }()
     
@@ -67,4 +67,3 @@ class AddPhotoView: UIView {
         circleImageView.layer.cornerRadius = circleImageView.frame.width / 2
     }
 }
-

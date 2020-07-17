@@ -21,7 +21,7 @@ class SignUpViewController: UIViewController {
     let passwordTextField = OneLineTextField(font: .avenir20())
     let confirmPasswordTextField = OneLineTextField(font: .avenir20())
     
-    let signUpButton = UIButton(title: "Sign Up", titleColor: .white, backgroundColor: .black, cornerRadius: 4)
+    let signUpButton = UIButton(title: "Sign Up", titleColor: .white, backgroundColor: .buttonDark(), cornerRadius: 4)
     let loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Login", for: .normal)
@@ -30,11 +30,42 @@ class SignUpViewController: UIViewController {
         return button
     }()
     
+    weak var delegate: AuthNavigatingDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
         setupConstraints()
+        
+        signUpButton.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+}
+
+// MARK: - Actions
+extension SignUpViewController {
+    @objc private func signUpButtonTapped() {
+        AuthService.shared.register(
+            email: emailTextField.text,
+            password: passwordTextField.text,
+            confirmPassword: confirmPasswordTextField.text) { (result) in
+                switch result {
+                case .success(let user):
+                    self.showAlert(with: "Успешно!", and: "Вы зарегистрированны!") {
+                        self.present(SetupProfileViewController(currentUser: user), animated: true, completion: nil)
+                    }
+                    
+                case .failure(let error):
+                    self.showAlert(with: "Ошибка!", and: error.localizedDescription)
+                }
+        }
+    }
+    
+    @objc private func loginButtonTapped() {
+        self.dismiss(animated: true) {
+            self.delegate?.toLoginVC()
+        }
     }
 }
 
@@ -112,4 +143,18 @@ struct SignUpVCProvider: PreviewProvider {
             
         }
     }
+}
+
+
+extension UIViewController {
+    
+    func showAlert(with title: String, and message: String, completion: @escaping () -> Void = { }) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { (_) in
+            completion()
+        }
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SetupProfileViewController: UIViewController {
     
@@ -22,12 +23,62 @@ class SetupProfileViewController: UIViewController {
     let aboutMeTextField = OneLineTextField(font: .avenir20())
     let sexSegmentedControl = UISegmentedControl(first: "Male", second: "Femail")
     
-    let goToChatsButton = UIButton(title: "Go to chats!", titleColor: .white, backgroundColor: .black, cornerRadius: 4)
+    let goToChatsButton = UIButton(title: "Go to chats!", titleColor: .white, backgroundColor: .buttonDark(), cornerRadius: 4)
+    
+    private let currentUser: User
+    
+    init(currentUser: User) {
+        self.currentUser = currentUser
+        super.init(nibName: nil, bundle: nil)
+        
+        if let username = currentUser.displayName {
+            fullNameTextField.text = username
+        }
+        // TODO set google image
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
         setupConstraints()
+        goToChatsButton.addTarget(self, action: #selector(goToChatsButtonTapped), for: .touchUpInside)
+        fullImageView.plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
+    }
+}
+
+// MARK: - Actions
+extension SetupProfileViewController {
+    @objc private func plusButtonTapped() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    @objc private func goToChatsButtonTapped() {
+        FirestoreService.shared.saveProfileWith(
+            id: currentUser.uid,
+            email: currentUser.email!,
+            username: fullNameTextField.text,
+            avatarImage: fullImageView.circleImageView.image,
+            description: aboutMeTextField.text,
+            sex: sexSegmentedControl.titleForSegment(at: sexSegmentedControl.selectedSegmentIndex)) { (result) in
+                switch result {
+                case .success(let muser):
+                    self.showAlert(with: "Успешно!", and: "Данные сохранены!", completion: {
+                        let mainTabBar = MainTabBarController(currentUser: muser)
+                        mainTabBar.modalPresentationStyle = .fullScreen
+                        self.present(mainTabBar, animated: true, completion: nil)
+                    })
+                case .failure(let error):
+                    self.showAlert(with: "Ошибка!", and: error.localizedDescription)
+                }
+        }
     }
 }
 
@@ -78,6 +129,16 @@ extension SetupProfileViewController {
     }
 }
 
+// MARK: - UIImagePickerControllerDelegate
+extension SetupProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true, completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        fullImageView.circleImageView.image = image
+    }
+}
+
 // MARK: - SwiftUI
 import SwiftUI
 
@@ -88,7 +149,7 @@ struct SetupProfileVCProvider: PreviewProvider {
     
     struct ContainerView: UIViewControllerRepresentable {
         
-        let setupProfileVC = SetupProfileViewController()
+        let setupProfileVC = SetupProfileViewController(currentUser: Auth.auth().currentUser!)
         
         func makeUIViewController(context: UIViewControllerRepresentableContext<SetupProfileVCProvider.ContainerView>) -> SetupProfileViewController {
             return setupProfileVC

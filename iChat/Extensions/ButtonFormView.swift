@@ -21,8 +21,8 @@ class ButtonFormView: UIView {
         self.addSubview(button)
         
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor)
+            label.topAnchor.constraint(equalTo: self.topAnchor),
+            label.leadingAnchor.constraint(equalTo: self.leadingAnchor)
         ])
         
         NSLayoutConstraint.activate([
