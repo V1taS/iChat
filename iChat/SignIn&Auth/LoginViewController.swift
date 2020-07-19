@@ -11,13 +11,13 @@ import GoogleSignIn
 
 class LoginViewController: UIViewController {
     
-    let welcomeLabel = UILabel(text: "Welcome back!", font: .avenir26())
+    let welcomeLabel = UILabel(text: "Добро пожаловать!", font: .avenir26())
     
-    let loginWithLabel = UILabel(text: "Login with")
-    let orLabel = UILabel(text: "or")
+    let loginWithLabel = UILabel(text: "Войдите с")
+    let orLabel = UILabel(text: "или")
     let emailLabel = UILabel(text: "Email")
     let passwordLabel = UILabel(text: "Password")
-    let needAnAccountLabel = UILabel(text: "Need an account?")
+    let needAnAccountLabel = UILabel(text: "Нет учетной записи?", font: .avenir14())
     
     let googleButton = UIButton(title: "Google", titleColor: .black, backgroundColor: .white, isShadow: true)
     let emailTextField = OneLineTextField(font: .avenir20())
@@ -25,9 +25,9 @@ class LoginViewController: UIViewController {
     let loginButton = UIButton(title: "Login", titleColor: .white, backgroundColor: .buttonDark())
     let signUpButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Sign Up", for: .normal)
+        button.setTitle("Зарегистрироваться", for: .normal)
         button.setTitleColor(.buttonRed(), for: .normal)
-        button.titleLabel?.font = .avenir20()
+        button.titleLabel?.font = .avenir14()
         return button
     }()
     
@@ -37,7 +37,6 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
-        googleButton.customizeGoogleButton()
         setupConstraints()
         
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
@@ -124,7 +123,7 @@ extension LoginViewController {
         view.addSubview(bottomStackView)
         
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
+            welcomeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         

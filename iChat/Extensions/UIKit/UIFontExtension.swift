@@ -10,6 +10,30 @@ import UIKit
 
 extension UIFont {
     
+    static func bolt20() -> UIFont? {
+        return UIFont.boldSystemFont(ofSize: 20.0)
+    }
+    
+    static func bolt14() -> UIFont? {
+        return UIFont.boldSystemFont(ofSize: 14.0)
+    }
+    
+    static func markerFel14() -> UIFont? {
+        return UIFont.init(name: "Marker Felt Wide", size: 14)
+    }
+    
+    static func markerFel20() -> UIFont? {
+        return UIFont.init(name: "Marker Felt Wide", size: 20)
+    }
+    
+    static func markerFel26() -> UIFont? {
+        return UIFont.init(name: "Marker Felt Wide", size: 26)
+    }
+    
+    static func avenir14() -> UIFont? {
+        return UIFont.init(name: "avenir", size: 14)
+    }
+    
     static func avenir20() -> UIFont? {
         return UIFont.init(name: "avenir", size: 20)
     }
