@@ -12,11 +12,11 @@ import FirebaseFirestore
 
 class PeopleViewController: UIViewController {
     
-    var users = [MUser]()
+    var players = [Players]()
     private var usersListener: ListenerRegistration?
     
     var collectionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<Section, MUser>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, Players>!
     
     enum Section: Int, CaseIterable {
         case users
@@ -28,12 +28,12 @@ class PeopleViewController: UIViewController {
         }
     }
     
-    private let currentUser: MUser
+    private let currentUser: Players
     
-    init(currentUser: MUser) {
+    init(currentUser: Players) {
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
-        title = currentUser.username
+        title = currentUser.name
     }
     
     deinit {
@@ -53,10 +53,10 @@ class PeopleViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Выйти", style: .plain, target: self, action: #selector(signOut))
         
-        usersListener = ListenerService.shared.usersObserve(users: users, completion: { (result) in
+        usersListener = ListenerService.shared.usersObserve(players: players, completion: { (result) in
             switch result {
             case .success(let users):
-                self.users = users
+                self.players = users
                 self.reloadData(with: nil)
             case .failure(let error):
                 self.showAlert(with: "Ошибка!", and: error.localizedDescription)
@@ -89,11 +89,11 @@ class PeopleViewController: UIViewController {
     }
     
     private func reloadData(with searchText: String?) {
-        let filtered = users.filter { (user) -> Bool in
+        let filtered = players.filter { (user) -> Bool in
             user.contains(filter: searchText)
         }
         
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MUser>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Players>()
         snapshot.appendSections([.users])
         snapshot.appendItems(filtered, toSection: .users)
 
@@ -122,7 +122,7 @@ extension PeopleViewController {
 // MARK: - Data Source
 extension PeopleViewController {
     private func createDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, MUser>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, user) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Section, Players>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, user) -> UICollectionViewCell? in
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }

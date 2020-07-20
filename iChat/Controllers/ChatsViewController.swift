@@ -16,10 +16,10 @@ class ChatsViewController: MessagesViewController {
     private var messages: [MMessage] = []
     private var messageListener: ListenerRegistration?
     
-    private let user: MUser
+    private let user: Players
     private let chat: MChat
     
-    init(user: MUser, chat: MChat) {
+    init(user: Players, chat: MChat) {
         self.user = user
         self.chat = chat
         super.init(nibName: nil, bundle: nil)
@@ -191,7 +191,7 @@ extension ChatsViewController {
 // MARK: - MessagesDataSource
 extension ChatsViewController: MessagesDataSource {
     func currentSender() -> SenderType {
-        return Sender(senderId: user.id, displayName: user.username)
+        return Sender(senderId: user.id, displayName: user.name)
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {

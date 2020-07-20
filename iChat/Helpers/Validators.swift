@@ -22,12 +22,12 @@ class Validators {
         return true
     }
     
-    static func isFilled(username: String?, description: String?, sex: String?) -> Bool {
+    static func isFilled(username: String?, description: String?, whoAreYou: String?) -> Bool {
         guard let description = description,
-        let sex = sex,
+        let whoAreYou = whoAreYou,
         let username = username,
         description != "",
-        sex != "",
+        whoAreYou != "",
             username != "" else {
                 return false
         }

@@ -17,24 +17,24 @@ class FirestoreService {
     let db = Firestore.firestore()
     
     private var usersRef: CollectionReference {
-        return db.collection("users")
+        return db.collection("players")
     }
     
     private var waitingChatsRef: CollectionReference {
-        return db.collection(["users", currentUser.id, "waitingChats"].joined(separator: "/"))
+        return db.collection(["players", currentUser.id, "waitingChats"].joined(separator: "/"))
     }
     
     private var activeChatsRef: CollectionReference {
-        return db.collection(["users", currentUser.id, "activeChats"].joined(separator: "/"))
+        return db.collection(["players", currentUser.id, "activeChats"].joined(separator: "/"))
     }
     
-    var currentUser: MUser!
+    var currentUser: Players!
     
-    func getUserData(user: User, completion: @escaping (Result<MUser, Error>) -> Void) {
+    func getUserData(user: User, completion: @escaping (Result<Players, Error>) -> Void) {
         let docRef = usersRef.document(user.uid)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
-                guard let muser = MUser(document: document) else {
+                guard let muser = Players(document: document) else {
                     completion(.failure(UserError.cannotUnwrapToMUser))
                     return
                 }
@@ -46,9 +46,9 @@ class FirestoreService {
         }
     }
     
-    func saveProfileWith(id: String, email: String, username: String?, avatarImage: UIImage?, description: String?, sex: String?, completion: @escaping (Result<MUser, Error>) -> Void) {
+    func saveProfileWith(id: String, email: String, name: String?, avatarImage: UIImage?, description: String?, whoAreYou: String?, completion: @escaping (Result<Players, Error>) -> Void) {
         
-        guard Validators.isFilled(username: username, description: description, sex: sex) else {
+        guard Validators.isFilled(username: name, description: description, whoAreYou: whoAreYou) else {
             completion(.failure(UserError.notFilled))
             return
         }
@@ -58,12 +58,8 @@ class FirestoreService {
             return
         }
         
-        var muser = MUser(username: username!,
-                          email: email,
-                          avatarStringURL: "not exist",
-                          description: description!,
-                          sex: sex!,
-                          id: id)
+        var muser = Players(name: name!, email: email, avatarStringURL: "not exist", description: description!, whoAreYou: whoAreYou!, id: id, teamNumber: 0, payment: "", isFavourite: false, inTeam: false, rating: 0, position: "ФРВ", numberOfGames: 0, numberOfGoals: 0, winGame: 0, losGame: 0, captain: false)
+
         StorageService.shared.upload(photo: avatarImage!) { (result) in
             switch result {
                 
@@ -82,12 +78,12 @@ class FirestoreService {
         } // StorageService
     } // saveProfileWith
     
-    func createWaitingChat(message: String, receiver: MUser, completion: @escaping (Result<Void, Error>) -> Void) {
-        let reference = db.collection(["users", receiver.id, "waitingChats"].joined(separator: "/"))
+    func createWaitingChat(message: String, receiver: Players, completion: @escaping (Result<Void, Error>) -> Void) {
+        let reference = db.collection(["players", receiver.id, "waitingChats"].joined(separator: "/"))
         let messageRef = reference.document(self.currentUser.id).collection("messages")
         
         let message = MMessage(user: currentUser, content: message)
-        let chat = MChat(friendUsername: currentUser.username,
+        let chat = MChat(friendUsername: currentUser.name,
                          friendAvatarStringURL: currentUser.avatarStringURL,
                          friendId: currentUser.id, lastMessageContent: message.content)
         
@@ -205,7 +201,7 @@ class FirestoreService {
         let friendMessageRef = friendRef.collection("messages")
         let myMessageRef = usersRef.document(currentUser.id).collection("activeChats").document(chat.friendId).collection("messages")
         
-        let chatForFriend = MChat(friendUsername: currentUser.username,
+        let chatForFriend = MChat(friendUsername: currentUser.name,
                                   friendAvatarStringURL: currentUser.avatarStringURL,
                                   friendId: currentUser.id,
                                   lastMessageContent: message.content)

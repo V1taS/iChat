@@ -33,12 +33,12 @@ class ListViewController: UIViewController {
     var dataSource: UICollectionViewDiffableDataSource<Section, MChat>?
     var collectionView: UICollectionView!
     
-    private let currentUser: MUser
+    private let currentUser: Players
        
-       init(currentUser: MUser) {
+       init(currentUser: Players) {
            self.currentUser = currentUser
            super.init(nibName: nil, bundle: nil)
-           title = currentUser.username
+           title = currentUser.name
        }
     
     required init?(coder: NSCoder) {

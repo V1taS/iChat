@@ -40,15 +40,15 @@ struct MMessage: Hashable, MessageType {
     var image: UIImage? = nil
     var downloadURL: URL? = nil
     
-    init(user: MUser, content: String) {
+    init(user: Players, content: String) {
         self.content = content
-        sender = Sender(senderId: user.id, displayName: user.username)
+        sender = Sender(senderId: user.id, displayName: user.name)
         sentDate = Date()
         id = nil
     }
     
-    init(user: MUser, image: UIImage) {
-        sender = Sender(senderId: user.id, displayName: user.username)
+    init(user: Players, image: UIImage) {
+        sender = Sender(senderId: user.id, displayName: user.name)
         self.image = image
         content = ""
         sentDate = Date()

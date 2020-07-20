@@ -12,19 +12,19 @@ import SDWebImage
 
 class SetupProfileViewController: UIViewController {
     
-    let welcomeLabel = UILabel(text: "Set up profile!", font: .avenir26())
+    let welcomeLabel = UILabel(text: "Настройка профиля", font: .bolt20(), textAlignment: .center)
     
     let fullImageView = AddPhotoView()
     
-    let fullNameLabel = UILabel(text: "Full name")
-    let aboutmeLabel = UILabel(text: "About me")
-    let sexLabel = UILabel(text: "Sex")
+    let nameLabel = UILabel(text: "Имя", font: .markerFel14())
+    let aboutmeLabel = UILabel(text: "Обо мне", font: .markerFel14())
+    let whoAreYouLabel = UILabel(text: "Кто ты?", font: .markerFel14())
     
-    let fullNameTextField = OneLineTextField(font: .avenir20())
-    let aboutMeTextField = OneLineTextField(font: .avenir20())
-    let sexSegmentedControl = UISegmentedControl(first: "Male", second: "Femail")
+    let nameTextField = CustomeTextField(placeholder: " Андрей Шевченко")
+    let aboutMeTextField = CustomeTextField(font: .avenir20())
+    let whoAreYouSegmentedControl = UISegmentedControl(first: "Игрок", second: "Зритель")
     
-    let goToChatsButton = UIButton(title: "Go to chats!", titleColor: .white, backgroundColor: .buttonDark(), cornerRadius: 4)
+    let goToButton = UIButton(title: "Начать", titleColor: .white, backgroundColor: .buttonDark(), font: .bolt14(), cornerRadius: 4)
     
     private let currentUser: User
     
@@ -33,7 +33,7 @@ class SetupProfileViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         if let username = currentUser.displayName {
-            fullNameTextField.text = username
+            nameTextField.text = username
         }
         if let photoURL = currentUser.photoURL {
             fullImageView.circleImageView.sd_setImage(with: photoURL, completed: nil)
@@ -49,7 +49,7 @@ class SetupProfileViewController: UIViewController {
         
         view.backgroundColor = .white
         setupConstraints()
-        goToChatsButton.addTarget(self, action: #selector(goToChatsButtonTapped), for: .touchUpInside)
+        goToButton.addTarget(self, action: #selector(goToChatsButtonTapped), for: .touchUpInside)
         fullImageView.plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
 }
@@ -67,10 +67,10 @@ extension SetupProfileViewController {
         FirestoreService.shared.saveProfileWith(
             id: currentUser.uid,
             email: currentUser.email!,
-            username: fullNameTextField.text,
+            name: nameTextField.text,
             avatarImage: fullImageView.circleImageView.image,
             description: aboutMeTextField.text,
-            sex: sexSegmentedControl.titleForSegment(at: sexSegmentedControl.selectedSegmentIndex)) { (result) in
+            whoAreYou: whoAreYouSegmentedControl.titleForSegment(at: whoAreYouSegmentedControl.selectedSegmentIndex)) { (result) in
                 switch result {
                 case .success(let muser):
                     self.showAlert(with: "Успешно!", and: "Данные сохранены!", completion: {
@@ -88,23 +88,16 @@ extension SetupProfileViewController {
 // MARK: - Setup constraints
 extension SetupProfileViewController {
     private func setupConstraints() {
-        let fullNameStackView = UIStackView(arrangedSubviews: [fullNameLabel, fullNameTextField],
-                                            axis: .vertical,
-                                            spacing: 0)
-        let aboutMeStackView = UIStackView(arrangedSubviews: [aboutmeLabel, aboutMeTextField],
-        axis: .vertical,
-        spacing: 0)
-        let sexStackView = UIStackView(arrangedSubviews: [sexLabel, sexSegmentedControl],
-        axis: .vertical,
-        spacing: 12)
         
-        goToChatsButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        let stackView = UIStackView(arrangedSubviews: [
-            fullNameStackView,
-            aboutMeStackView,
-            sexStackView,
-            goToChatsButton
-            ], axis: .vertical, spacing: 40)
+        let nameStackView = UIStackView(arrangedSubviews: [nameLabel, nameTextField], axis: .vertical, spacing: 5)
+        
+        let aboutMeStackView = UIStackView(arrangedSubviews: [aboutmeLabel, aboutMeTextField], axis: .vertical, spacing: 5)
+        
+        let whoAreYouStackView = UIStackView(arrangedSubviews: [whoAreYouLabel, whoAreYouSegmentedControl], axis: .vertical, spacing: 12)
+        
+        goToButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        let stackView = UIStackView(arrangedSubviews: [nameStackView, aboutMeStackView, whoAreYouStackView, goToButton], axis: .vertical, spacing: 20)
         
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         fullImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +108,7 @@ extension SetupProfileViewController {
         view.addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
+            welcomeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
             welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         

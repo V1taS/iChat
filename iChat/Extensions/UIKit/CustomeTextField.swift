@@ -8,12 +8,19 @@
 
 import UIKit
 
-class OneLineTextField: UITextField {
+class CustomeTextField: UITextField {
     
-    convenience init(font: UIFont? = .avenir20()) {
+    convenience init(font: UIFont? = .avenir20(), placeholder: String? = "", textColor: UIColor? = .black, isSecure: Bool = false, backgroundColor: UIColor? = .systemGray6, cornerRadius: CGFloat = 5, autocapitalizationType: UITextAutocapitalizationType = .none) {
         self.init()
         
         self.font = font
+        self.placeholder = placeholder
+        self.textColor = textColor
+        self.isSecureTextEntry = isSecure
+        self.backgroundColor = backgroundColor
+        self.layer.cornerRadius = cornerRadius
+        self.autocapitalizationType = autocapitalizationType
+        
         self.borderStyle = .none
         self.translatesAutoresizingMaskIntoConstraints = false
         

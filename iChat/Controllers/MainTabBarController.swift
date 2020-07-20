@@ -10,14 +10,9 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
-    private let currentUser: MUser
+    private let currentUser: Players
     
-    init(currentUser: MUser = MUser(username: "frfer",
-                                    email: "fr",
-                                    avatarStringURL: "fer",
-                                    description: "fre",
-                                    sex: "ewr",
-                                    id: "fregtr")) {
+    init(currentUser: Players = Players(name: "Андрей Шевченко", email: "demo@mail.ru", avatarStringURL: "", description: "", whoAreYou: "Игрок", id: "", teamNumber: 0, payment: "", isFavourite: false, inTeam: false, rating: 0, position: "ФРВ", numberOfGames: 0, numberOfGoals: 0, winGame: 0, losGame: 0, captain: false)) {
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }

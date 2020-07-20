@@ -17,43 +17,43 @@ class ListenerService {
     private let db = Firestore.firestore()
     
     private var usersRef: CollectionReference {
-        return db.collection("users")
+        return db.collection("players")
     }
     
     private var currentUserId: String {
         return Auth.auth().currentUser!.uid
     }
     
-    func usersObserve(users: [MUser], completion: @escaping (Result<[MUser], Error>) -> Void) -> ListenerRegistration? {
-        var users = users
+    func usersObserve(players: [Players], completion: @escaping (Result<[Players], Error>) -> Void) -> ListenerRegistration? {
+        var players = players
         let usersListener = usersRef.addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
                 completion(.failure(error!))
                 return
             }
             snapshot.documentChanges.forEach { (diff) in
-                guard let muser = MUser(document: diff.document) else { return }
+                guard let muser = Players(document: diff.document) else { return }
                 switch diff.type {
                 case .added:
-                    guard !users.contains(muser) else { return }
+                    guard !players.contains(muser) else { return }
                     guard muser.id != self.currentUserId else { return }
-                    users.append(muser)
+                    players.append(muser)
                 case .modified:
-                    guard let index = users.firstIndex(of: muser) else { return }
-                    users[index] = muser
+                    guard let index = players.firstIndex(of: muser) else { return }
+                    players[index] = muser
                 case .removed:
-                    guard let index = users.firstIndex(of: muser) else { return }
-                    users.remove(at: index)
+                    guard let index = players.firstIndex(of: muser) else { return }
+                    players.remove(at: index)
                 }
             }
-            completion(.success(users))
+            completion(.success(players))
         }
         return usersListener
     } // usersObserve
     
     func waitingChatsObserve(chats: [MChat], completion: @escaping (Result<[MChat], Error>) -> Void) -> ListenerRegistration? {
         var chats = chats
-        let chatsRef = db.collection(["users", currentUserId, "waitingChats"].joined(separator: "/"))
+        let chatsRef = db.collection(["players", currentUserId, "waitingChats"].joined(separator: "/"))
         let chatsListener = chatsRef.addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
                 completion(.failure(error!))
@@ -83,7 +83,7 @@ class ListenerService {
     
     func activeChatsObserve(chats: [MChat], completion: @escaping (Result<[MChat], Error>) -> Void) -> ListenerRegistration? {
         var chats = chats
-        let chatsRef = db.collection(["users", currentUserId, "activeChats"].joined(separator: "/"))
+        let chatsRef = db.collection(["players", currentUserId, "activeChats"].joined(separator: "/"))
         let chatsListener = chatsRef.addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
                 completion(.failure(error!))

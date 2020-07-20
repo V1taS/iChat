@@ -17,11 +17,11 @@ class ProfileViewController: UIViewController {
     let aboutMeLabel = UILabel(text: "You have the opportunity to chat with the best man in the world!", font: .systemFont(ofSize: 16, weight: .light))
     let myTextField = InsertableTextField()
     
-    private let user: MUser
+    private let user: Players
     
-    init(user: MUser) {
+    init(user: Players) {
         self.user = user
-        self.nameLabel.text = user.username
+        self.nameLabel.text = user.name
         self.aboutMeLabel.text = user.description
         self.imageView.sd_setImage(with: URL(string: user.avatarStringURL), completed: nil)
         super.init(nibName: nil, bundle: nil)
@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController {
                 switch result {
                     
                 case .success:
-                    UIApplication.getTopViewController()?.showAlert(with: "Успешно!", and: "Ваше сообщение для \(self.user.username) было отправлено.")
+                    UIApplication.getTopViewController()?.showAlert(with: "Успешно!", and: "Ваше сообщение для \(self.user.name) было отправлено.")
                 case .failure(let error):
                     UIApplication.getTopViewController()?.showAlert(with: "Ошибка", and: error.localizedDescription)
                 }

@@ -15,11 +15,18 @@ class AuthViewController: UIViewController {
     
     let registerInFTLabel = UILabel(text: "Зарегистрироваться в FooTeam", font: .bolt20(), textAlignment: .center)
     let descriptionFTLabel = UILabel(text: "Создайте профиль, чтобы создать свою собственную команду, управлять составами и получить другие возможности.", font: .avenir14(), color: .systemGray, textAlignment: .center)
-    let alreadyOnboardLabel = UILabel(text: "Уже зарегистрированы?")
+    let alreadyOnboardLabel = UILabel(text: "Уже есть аккаунт?", font: .avenir14())
     
     let googleButton = UIButton(title: "Продолжить в Google", titleColor: .black, backgroundColor: .white, font: .bolt14(), logo: #imageLiteral(resourceName: "googleLogo"))
     let emailButton = UIButton(title: "Ввести эл. почту", titleColor: .black, backgroundColor: .white, font: .bolt14(), logo: #imageLiteral(resourceName: "messagingIcon"))
-    let loginButton = UIButton(title: "Войти", titleColor: .buttonRed(), backgroundColor: .white, font: .bolt14())
+    
+    let loginButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Войти", for: .normal)
+        button.setTitleColor(.buttonRed(), for: .normal)
+        button.titleLabel?.font = .bolt14()
+        return button
+    }()
     
     let signUpVC = SignUpViewController()
     let loginVC = LoginViewController()
@@ -63,14 +70,29 @@ extension AuthViewController {
         
         let topStackView = UIStackView(arrangedSubviews: [registerInFTLabel, descriptionFTLabel], axis: .vertical, spacing: 20)
         
-        let stackView = UIStackView(arrangedSubviews: [emailButton, googleButton, loginButton], axis: .vertical, spacing: 10)
+        let stackView = UIStackView(arrangedSubviews: [emailButton, googleButton], axis: .vertical, spacing: 10)
+        
+        loginButton.contentHorizontalAlignment = .fill
+        let bottomStackView = UIStackView(arrangedSubviews: [alreadyOnboardLabel, loginButton],
+                                          axis: .horizontal,
+                                          spacing: 10)
+        
+        let footerStackView = UIView()
+        footerStackView.backgroundColor = .systemGray6
+        footerStackView.layer.borderColor = UIColor.systemGray5.cgColor
+        footerStackView.layer.borderWidth = 1
+        
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         topStackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        bottomStackView.translatesAutoresizingMaskIntoConstraints = false
+        footerStackView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(logoImageView)
         view.addSubview(topStackView)
         view.addSubview(stackView)
+        view.addSubview(footerStackView)
+        view.addSubview(bottomStackView)
         
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
@@ -89,6 +111,19 @@ extension AuthViewController {
             stackView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 40),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
+        
+        NSLayoutConstraint.activate([
+            bottomStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            bottomStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        alreadyOnboardLabel.leadingAnchor.constraint(equalTo: bottomStackView.leadingAnchor, constant: 40).isActive = true
+        
+        NSLayoutConstraint.activate([
+            footerStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            footerStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            footerStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            footerStackView.heightAnchor.constraint(equalToConstant: 95)
         ])
     }
 }
